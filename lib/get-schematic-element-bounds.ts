@@ -72,7 +72,10 @@ const getSchematicNetLabelTextWidth = (text: string): number => {
 const getSchematicNetLabelBounds = (
   netLabel: SchematicNetLabel,
 ): SchematicElementBounds => {
-  const labelLength = getSchematicNetLabelTextWidth(netLabel.text)
+  // 記号の描画寸法は別途扱うため、通常ラベルの文字幅変更を適用しない。
+  const labelLength = netLabel.symbol_name
+    ? netLabel.text.length * 0.12 + 0.12
+    : getSchematicNetLabelTextWidth(netLabel.text)
   const anchor = netLabel.anchor_position
 
   if (!anchor) {
