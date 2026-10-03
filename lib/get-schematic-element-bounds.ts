@@ -6,9 +6,13 @@ import type {
 
 import { estimateSchematicTextWidth } from "./estimate-schematic-text-width"
 
+type SchematicNetLabelWithSuperscript = SchematicNetLabel & {
+  display_superscript?: string
+}
+
 export type SchematicElementWithBounds =
   | SchematicComponent
-  | SchematicNetLabel
+  | SchematicNetLabelWithSuperscript
   | SchematicTrace
 
 export interface SchematicElementBounds {
@@ -56,12 +60,19 @@ const createBounds = ({
   }
 }
 
-const getSchematicNetLabelTextWidth = (text: string): number => {
+const getSchematicNetLabelTextWidth = (
+  text: string,
+  superscript?: string,
+): number => {
   const arrowWidth = 0.3
   const endPadding = 0.3
   const perCharacterPadding = 0.06
+  const superscriptWidth = superscript
+    ? 0.08 + estimateSchematicTextWidth(superscript) * 0.65
+    : 0
   return (
     (estimateSchematicTextWidth(text) +
+      superscriptWidth +
       arrowWidth * 2 +
       endPadding +
       perCharacterPadding * text.length) *
@@ -70,12 +81,12 @@ const getSchematicNetLabelTextWidth = (text: string): number => {
 }
 
 const getSchematicNetLabelBounds = (
-  netLabel: SchematicNetLabel,
+  netLabel: SchematicNetLabelWithSuperscript,
 ): SchematicElementBounds => {
   // 記号の描画寸法は別途扱うため、通常ラベルの文字幅変更を適用しない。
   const labelLength = netLabel.symbol_name
     ? netLabel.text.length * 0.12 + 0.12
-    : getSchematicNetLabelTextWidth(netLabel.text)
+    : getSchematicNetLabelTextWidth(netLabel.text, netLabel.display_superscript)
   const anchor = netLabel.anchor_position
 
   if (!anchor) {
