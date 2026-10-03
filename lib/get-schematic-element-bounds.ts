@@ -4,6 +4,8 @@ import type {
   SchematicTrace,
 } from "circuit-json"
 
+import { estimateSchematicTextWidth } from "./estimate-schematic-text-width"
+
 export type SchematicElementWithBounds =
   | SchematicComponent
   | SchematicNetLabel
@@ -55,10 +57,16 @@ const createBounds = ({
 }
 
 const getSchematicNetLabelTextWidth = (text: string): number => {
-  const characterWidth = 0.12 * (SCHEMATIC_NET_LABEL_FONT_SIZE / 0.18)
-  const horizontalPadding = 0.12 * (SCHEMATIC_NET_LABEL_FONT_SIZE / 0.18)
-
-  return text.length * characterWidth + horizontalPadding
+  const arrowWidth = 0.3
+  const endPadding = 0.3
+  const perCharacterPadding = 0.06
+  return (
+    (estimateSchematicTextWidth(text) +
+      arrowWidth * 2 +
+      endPadding +
+      perCharacterPadding * text.length) *
+    SCHEMATIC_NET_LABEL_FONT_SIZE
+  )
 }
 
 const getSchematicNetLabelBounds = (
