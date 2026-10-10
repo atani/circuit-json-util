@@ -46,7 +46,7 @@ test("plain-text width changes preserve existing symbol-label bounds", () => {
         if (!bounds) throw new Error("Label bounds are required")
         const actual = [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY]
         const expected = useAnchor ? anchored : centered
-        actual.forEach((value, i) => expect(value).toBeCloseTo(expected[i], 8))
+        expected.forEach((value, i) => expect(actual[i]).toBeCloseTo(value, 8))
       }
     }
   }
